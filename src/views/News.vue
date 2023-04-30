@@ -2,9 +2,88 @@
   <div class="container">
     <div class="header">
       <h1>ข่าวประชาสัมพันธ์</h1>
+      <!-- create news -->
+      <div v-if="role == 'admin'">
+            <b-button
+              variant="primary"
+              v-b-modal.newscreate
+              >Create News</b-button
+            >
+      </div>
+      <!-- modal news -->
+      <b-modal
+      id="newscreate"
+      
+      title="Submit Your Name"
+      @show="resetModal"
+      @hidden="resetModal"
+      @ok="handleOk"
+    >
+      <form ref="form" @submit.stop.prevent="handleSubmit">
+        <b-form-group
+          label="Title"
+          label-for="Title-input"
+          invalid-feedback="Title is required"
+          :state="TitleState"
+        >
+          <b-form-input
+            id="title-input"
+            v-model="title"
+            :state="nameState"
+            required
+          ></b-form-input>
+        </b-form-group>
+        <b-form-group
+          label="Sub_title"
+          label-for="Sub_title-input"
+          invalid-feedback="Sub_title is required"
+          :state="Sub_titleState"
+        >
+          <b-form-input
+            id="sub_title-input"
+            v-model="sub_title"
+            :state="Sub_titleState"
+            required
+          ></b-form-input>
+        </b-form-group>
+        <b-form-group
+          label="Description"
+          label-for="Description-input"
+          invalid-feedback="Description is required"
+          :state="DescriptionState"
+        >
+          <b-form-input
+            id="desc-input"
+            v-model="desc"
+            :state="DescriptionState"
+            required
+          ></b-form-input>
+        </b-form-group>
+        <b-form-checkbox
+          id="checkbox-1"
+          v-model="have_form"
+          name="checkbox-1"
+          value="yes"
+          unchecked-value="no"
+        >
+          Form
+        </b-form-checkbox>
+        <!-- <b-form-file
+          v-model="pic"
+          @change="onFile"
+          placeholder="Choose a file or drop it here..."
+          
+        ></b-form-file> -->
+        <input type="file" @change="onFileSelected">
+      </form>
+      <template #modal-footer="{ close }">
+            <b-button variant="danger" @click="close()">Close</b-button>
+            <b-button variant="success" @click="create_news(), close()">Submit</b-button>
+      </template>
+    </b-modal>
     </div>
     <div class="news_layer ">
-      <div v-for="(item, index) in new_item" :key="item.id" class="me-3 my-3">
+      <div v-for="(item, index) in test_item" :key="item._id" class="me-3 my-3">
         <b-card class="card-news">
           <b-card-title>
             {{ item.title }}
@@ -19,11 +98,11 @@
             <p>
               <span
                 class="pointer"
-                v-if="!id_text.includes('show' + item.id)"
+                v-if="!id_text.includes('show' + item._id)"
                 @click="show_text(item)"
                 >{{ item.desc_short }}...</span
               >
-              <span v-if="id_text.includes('show' + item.id)">
+              <span v-if="id_text.includes('show' + item._id)">
                 {{item.desc}}
               </span>
             </p>
@@ -31,7 +110,7 @@
               class="pointer"
               style="color: blue"
               @click="show_text(item)"
-              v-if="!id_text.includes('show' + item.id)"
+              v-if="!id_text.includes('show' + item._id)"
             >
               read more
             </p>
@@ -39,7 +118,7 @@
               class="pointer"
               style="color: blue"
               @click="Hide_text(item)"
-              v-if="id_text.includes('show' + item.id)"
+              v-if="id_text.includes('show' + item._id)"
             >
               Hide
             </p>
@@ -49,7 +128,7 @@
             <b-button
               @click="show_modal(item)"
               variant="primary"
-              v-b-modal="item.id"
+              v-b-modal="item._id"
               >View Detail</b-button
             >
           </div>
@@ -57,13 +136,13 @@
           <div v-if="role == 'admin'" class="w-100">
             <b-button
               variant="warning"
-              v-b-modal="item.id"
+              v-b-modal="item._id"
               class="me-1 float-start"
               >Edit</b-button
             >
             <b-button
               variant="danger"
-              v-b-modal="item.id"
+              v-b-modal="'del' + item._id"
               class="me-1 float-start"
               >Delete
             </b-button>
@@ -71,7 +150,7 @@
         </b-card>
 
         <!-- modal -->
-        <b-modal scrollable v-bind:id="item.id" centered v-if="role == 'user'">
+        <b-modal scrollable v-bind:id="item._id" centered v-if="role == 'user'">
           <template #modal-header="{ close }">
             <div class="w-100">
               <h2 class="float-start">{{ item.title }}</h2>
@@ -90,13 +169,14 @@
               v-if="OpenModal2"
               @click="modal2(), close()"
               variant="success"
-              v-b-modal="'modal' + item.id"
+              v-b-modal="'modal' + item._id"
               >Go to Form</b-button
             >
           </template>
         </b-modal>
+        
         <!-- modal 2 -->
-        <b-modal v-bind:id="'modal' + item.id" title="Second Modal" centered>
+        <b-modal v-bind:id="'modal' + item._id" title="Second Modal" centered>
           <template #modal-header="{ close }">
             <div class="w-100">
               <h2 class="float-start my-1">Form</h2>
@@ -139,7 +219,7 @@
         </b-modal>
 
         <!-- modal for Admin Edit -->
-        <b-modal scrollable v-bind:id="item.id" centered v-if="role == 'admin'">
+        <b-modal scrollable v-bind:id="item._id" centered v-if="role == 'admin'">
           <template #modal-header="{ close }">
             <div class="w-100">
               <h2 class="float-start">{{ item.title }}</h2>
@@ -159,11 +239,32 @@
             <b-button variant="danger" @click="close()">Close</b-button>
           </template>
         </b-modal>
+        <!-- modal for Admin Delete -->
+        <b-modal scrollable v-bind:id="'del' + item._id" centered v-if="role == 'admin'">
+          <template #modal-header="{ close }">
+            <div class="w-100">
+              <h2 class="float-start">{{ item.title }}</h2>
+              <b-button class="float-end" @click="close()">Close</b-button>
+            </div>
+          </template>
+          <b-img
+            src="https://picsum.photos/300/150/?image=41"
+            fluid-grow
+            alt="Fluid-grow image"
+          ></b-img><br><br>
+          
+          <p>{{item.desc}}</p>
+          <template #modal-footer="{ close }">
+            <b-button variant="success" @click="delete_news(item),close()">Confirm</b-button>
+            <b-button variant="danger" @click="close()">Cancle</b-button>
+          </template>
+        </b-modal>
       </div>
     </div>
   </div>
 </template>
 <script>
+import axios from 'axios'
 export default {
   data() {
     return {
@@ -219,19 +320,39 @@ export default {
         },
       ],
       detail_item: [],
+      test_data: [],
+      test_item: [],
+      title: '',
+      sub_title: '',
+      desc: '',
+      have_form: false,
+      selectedFile: null,
+
     };
   },
+
   mounted() {
     // this.id = this._uid
-    for (const element of this.new_item) {
-      for (let i = 0; i < 100; i++) {
-        element.desc_short += element.desc[i];
-      }
-      // let box = element.desc.substring(100);
-      // element.desc = box;
-    }
+
+    axios
+      .get('http://localhost:5000/getAllNews')
+      .then((response) => {
+        console.log(response)
+        // this.test_data = response.data
+        this.test_item = response.data.data
+
+        for (const element of this.test_item) {
+          for (let i = 0; i < 100; i++) {
+            element.desc_short += element.desc[i];
+          }
+          // let box = element.desc.substring(100);
+          // element.desc = box;
+        }
+      })
+
+
   },
-  
+
   methods: {
     show_modal(num) {
       this.OpenClose = true;
@@ -246,7 +367,7 @@ export default {
       this.OpenClose = false;
     },
     show_text(item) {
-      this.id_text.push("show" + item.id);
+      this.id_text.push("show" + item._id);
     },
     Hide_text(item) {
       // if(!this.dots){
@@ -254,23 +375,63 @@ export default {
       //   this.more_text = false
       // }
       for (const [index, value] of this.id_text.entries()) {
-        if (value == "show" + item.id) {
+        if (value == "show" + item._id) {
           this.id_text.splice(index, 1);
         }
       }
     },
+    onFileSelected(event){
+      console.log(event.target.files[0])
+      this.selectedFile = event.target.files[0]
+    },
+    create_news() {
+      
+      axios
+    .post('http://localhost:5000/news', {
+          title:this.title,
+          sub_title: this.sub_title,
+          desc: this.desc,
+          desc_short: "",
+          img: '',
+          form: this.have_form,
+          show_m: false
+    })
+    .then((response) => {
+      console.log(response)
+      this.title = "";
+      this.sub_title = '';
+      this.desc = "";
+      this.img = '';
+      this.have_form = false;
+    }).catch((error) => {
+      this.error = error.response.data;
+    })
+    },
+    delete_news(item){
+      const id = item._id
+      axios.delete('http://localhost:5000/news/delete/'+ id)
+      .then((response) => console.log(response, "this is id", id))
+      .catch((error) =>{
+        this.error = error.response.data;
+      })
+    },
+    
   },
+
 };
 </script>
 
 <style scoped>
 .header {
   text-align: center;
+  display: inline;
 }
-.container{
+
+.container {
   /* border: 2px solid red; */
 
 }
+
 .news_layer {
   display: flex;
   flex-wrap: wrap;

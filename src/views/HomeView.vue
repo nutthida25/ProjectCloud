@@ -10,7 +10,7 @@
             <b-collapse id="nav-collapse" is-nav>
                 <b-navbar-nav>
                     <b-nav-item href="#">Home</b-nav-item>
-                    <b-nav-item href="#">News</b-nav-item>
+                    <b-nav-item href="/news">News</b-nav-item>
                     <b-nav-item href="#" disabled>Reserve Room</b-nav-item>
                     <b-nav-item href="#">Contact</b-nav-item>
                 </b-navbar-nav>

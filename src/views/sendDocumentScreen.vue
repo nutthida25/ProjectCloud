@@ -10,7 +10,7 @@
                 <div class="container text-center rounded row d-flex justify-content-center align-items-center">
                         <div class="row border bg-white border-primary m-3 p-3 rounded" style="width:40vh">
                             <div class="col">
-                                <img src="../img/document.png" width="50vh">
+                                <img src="../assets/cat.jpg" width="50vh">
                             </div>
                             <div class="col text-secondary" style="font-size: 2.5vh">
                                 <p>แบบฟอร์มใบลาเรียน</p>
@@ -18,7 +18,7 @@
                         </div>
                         <div class="row border bg-white border-primary m-3 p-3 rounded" style="width:40vh">
                             <div class="col">
-                                <img src="../img/document.png" width="50vh">
+                                <img src="../assets/cat.jpg" width="50vh">
                             </div>
                             <div class="col text-secondary" style="font-size: 2.5vh">
                                 <p>เอกสารลาเรียนเพิ่มเติม</p>
